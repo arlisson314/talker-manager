@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { getTalkers } = require('./services/fs_utils');
+const { generateToken } = require('./validationToken/validationToken');
 
 const app = express();
 app.use(bodyParser.json());
@@ -33,6 +34,21 @@ app.get('/talker/:id', async (req, res) => {
     return res.status(HTTP_OK_STATUS).json(filterTalkerById);
   } catch (error) {
     return res.status(500).end();
+  }
+});
+
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+  const token = generateToken();
+
+  try {
+    if ([email, password].includes(undefined)) {
+      return res.status(401).json({ message: 'missing fields' });
+    }
+
+    return res.status(200).json({ token });
+  } catch (error) {
+    return res.end(500).end();
   }
 });
 
