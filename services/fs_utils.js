@@ -1,4 +1,4 @@
-const { readFile } = require('fs').promises;
+const { readFile, writeFile } = require('fs').promises;
 
 // const getTalkers = async () => readFile('/talker.json', 'utf-8')
 //   .then((data) => JSON.parse(data));
@@ -9,4 +9,6 @@ const getTalkers = async () => {
   return parsedTalkers;
 };
 
-module.exports = { getTalkers };
+const setwritetalkers = (newSimpsons) => writeFile('./talker.json', JSON.stringify(newSimpsons));
+
+module.exports = { getTalkers, setwritetalkers };
