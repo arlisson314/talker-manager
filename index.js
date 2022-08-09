@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { getTalkers } = require('./services/fs_utils');
-const { generateToken } = require('./validationToken/validationToken');
+const { generateToken } = require('./validation/validationToken');
+const { validationEmail, validationPassword } = require('./validation/validationLogin');
 
 const app = express();
 app.use(bodyParser.json());
@@ -37,13 +38,13 @@ app.get('/talker/:id', async (req, res) => {
   }
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', validationEmail, validationPassword, (req, res) => {
   const { email, password } = req.body;
   const token = generateToken();
 
   try {
     if ([email, password].includes(undefined)) {
-      return res.status(401).json({ message: 'missing fields' });
+      return res.status(400).json({ message: 'missing fields' });
     }
 
     return res.status(200).json({ token });
@@ -55,3 +56,7 @@ app.post('/login', (req, res) => {
 app.listen(PORT, () => {
   console.log('Online');
 });
+
+// const MIN_DIG = 6;
+// const regex = /^.*@.*\.com$/;
+// return (password.length >= MIN_DIG && email.match(regex)
