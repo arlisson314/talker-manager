@@ -104,10 +104,18 @@ validateTalkRate, async (req, res) => {
     age,
     talk: { watchedAt, rate },
   };
-  console.log(filteredTalkers);
   filteredTalkers.push(talker);
   await setWritetalkers(filteredTalkers);
   return res.status(HTTP_OK_STATUS).json(talker);
+});
+
+app.delete('/talker/:id', validateToken, async (req, res) => {
+  const { id } = req.params;
+  const talkers = await getTalkers();
+  const filteredTalkers = talkers.filter((t) => t.id !== Number(id));
+  await setWritetalkers(filteredTalkers);
+
+  return res.status(204).end();
 });
 
 app.listen(PORT, () => {
