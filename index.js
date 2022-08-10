@@ -11,7 +11,6 @@ const {
   validationTalk,
   validationTalkWatchedAt,
   validateTalkRate } = require('./validation/validations');
-// const { autthMiddleware } = require('./services/authMiddleware');
 
 const app = express();
 app.use(bodyParser.json());
@@ -63,7 +62,6 @@ app.post('/login', validationEmail, validationPassword, (req, res) => {
 });
 
 app.post('/talker',
-// autthMiddleware,
 validationName,
 validateToken,
 validationAge,
@@ -86,6 +84,30 @@ validateTalkRate, async (req, res) => {
   await setWritetalkers(talkers);
 
   return res.status(201).json(newTalker);
+});
+
+app.put('/talker/:id',
+validationName,
+validateToken,
+validationAge,
+validationTalk,
+validationTalkWatchedAt,
+validateTalkRate, async (req, res) => {
+  const { id } = req.params;
+  const talkers = await getTalkers();
+  const filteredTalkers = talkers.filter((t) => t.id !== Number(id));
+  const { name, age, talk: { watchedAt, rate } } = req.body;
+
+  const talker = {
+    id: Number(id),
+    name,
+    age,
+    talk: { watchedAt, rate },
+  };
+  console.log(filteredTalkers);
+  filteredTalkers.push(talker);
+  await setWritetalkers(filteredTalkers);
+  return res.status(HTTP_OK_STATUS).json(talker);
 });
 
 app.listen(PORT, () => {

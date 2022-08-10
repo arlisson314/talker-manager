@@ -2,7 +2,7 @@ const validationEmail = (req, res, next) => {
   const { email } = req.body;
   const regex = /^.*@.*\.com$/;
   try {
-    if (!email) {
+    if ([email].includes(undefined)) {
       return res.status(400).json({ message: 'O campo "email" é obrigatório' });
     }
     if (!email.match(regex)) {
@@ -17,7 +17,7 @@ const validationEmail = (req, res, next) => {
 const validationPassword = (req, res, next) => {
   const { password } = req.body;
   try {
-    if (!password) {
+    if ([password].includes(undefined)) {
       return res.status(400).json({ message: 'O campo "password" é obrigatório' });
     }
     if (password.length < 6) {
@@ -39,9 +39,9 @@ const validateToken = (req, res, next) => {
   }
 
   if (token.length !== 16) {
-    return res.status(401).json({
-      message: 'Token inválido',
-    });
+      return res.status(401).json({
+          message: 'Token inválido',
+      });
   }
 
   next();
@@ -50,7 +50,7 @@ const validateToken = (req, res, next) => {
 const validationName = (req, res, next) => {
   const { name } = req.body;
   try {
-    if (!name) {
+    if ([name].includes(undefined)) {
       return res.status(400).json({ message: 'O campo "name" é obrigatório' });
     }
     if (name.length < 3) {
@@ -101,8 +101,8 @@ const validationTalkWatchedAt = (req, res, next) => {
         message: 'O campo "watchedAt" é obrigatório',
     });
   }
-  if (!talk.watchedAt.match(regex)) {
-    // !regex.test(talk.watchedAt)
+  if (!regex.test(talk.watchedAt)) {
+    // !talk.watchedAt.match(regex)
     return res.status(400).json({
         message: 'O campo "watchedAt" deve ter o formato "dd/mm/aaaa"',
     });
@@ -113,8 +113,8 @@ next();
 
 const validateTalkRate = (req, res, next) => {
   const { talk } = req.body;
-
-  if (!talk.rate) {
+  
+  if (!talk.rate && talk.rate !== 0) {
     return res.status(400).json({
       message: 'O campo "rate" é obrigatório',
     });
