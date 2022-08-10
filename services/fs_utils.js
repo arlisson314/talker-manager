@@ -9,6 +9,6 @@ const getTalkers = async () => {
   return parsedTalkers;
 };
 
-const setwritetalkers = (newSimpsons) => writeFile('./talker.json', JSON.stringify(newSimpsons));
+const setWritetalkers = (newSimpsons) => writeFile('./talker.json', JSON.stringify(newSimpsons));
 
-module.exports = { getTalkers, setwritetalkers };
+module.exports = { getTalkers, setWritetalkers };

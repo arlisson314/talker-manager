@@ -1,8 +1,17 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { getTalkers } = require('./services/fs_utils');
-const { generateToken } = require('./validation/validationToken');
-const { validationEmail, validationPassword } = require('./validation/validationLogin');
+const { getTalkers, setWritetalkers } = require('./services/fs_utils');
+const { generateToken } = require('./services/token');
+const {
+  validationEmail,
+  validationPassword,
+  validateToken,
+  validationName,
+  validationAge,
+  validationTalk,
+  validationTalkWatchedAt,
+  validateTalkRate } = require('./validation/validations');
+// const { autthMiddleware } = require('./services/authMiddleware');
 
 const app = express();
 app.use(bodyParser.json());
@@ -51,6 +60,32 @@ app.post('/login', validationEmail, validationPassword, (req, res) => {
   } catch (error) {
     return res.end(500).end();
   }
+});
+
+app.post('/talker',
+// autthMiddleware,
+validationName,
+validateToken,
+validationAge,
+validationTalk,
+validationTalkWatchedAt,
+validateTalkRate, async (req, res) => {
+  const { name, age, talk: { watchedAt, rate } } = req.body;
+  const talkers = await getTalkers();
+  const id = talkers.length + 1;
+  const newTalker = {
+    id,
+    name,
+    age,
+    talk: {
+      watchedAt,
+      rate,
+    },
+  };
+  talkers.push(newTalker);
+  await setWritetalkers(talkers);
+
+  return res.status(201).json(newTalker);
 });
 
 app.listen(PORT, () => {
