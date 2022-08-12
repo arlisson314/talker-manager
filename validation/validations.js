@@ -39,11 +39,10 @@ const validateToken = (req, res, next) => {
   }
 
   if (token.length !== 16) {
-      return res.status(401).json({
-          message: 'Token inválido',
-      });
+    return res.status(401).json({
+      message: 'Token inválido',
+    });
   }
-
   next();
 };
 
@@ -98,14 +97,14 @@ const validationTalkWatchedAt = (req, res, next) => {
 
   if (!talk.watchedAt) {
     return res.status(400).json({
-        message: 'O campo "watchedAt" é obrigatório',
+      message: 'O campo "watchedAt" é obrigatório',
     });
   }
-  if (!regex.test(talk.watchedAt)) {
-    // !talk.watchedAt.match(regex)
+  if (!talk.watchedAt.match(regex)) {
+  // !regex.test(talk.watchedAt)
     return res.status(400).json({
-        message: 'O campo "watchedAt" deve ter o formato "dd/mm/aaaa"',
-    });
+    message: 'O campo "watchedAt" deve ter o formato "dd/mm/aaaa"',
+  });
   }
 
 next();

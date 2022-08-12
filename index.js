@@ -23,6 +23,15 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
+app.get('/talker/search', validateToken, async (req, res) => {
+  const { q } = req.query;
+  const talkers = await getTalkers();
+
+  const filteredTalkers = talkers.filter((t) => t.name.includes(q));
+
+  return res.status(HTTP_OK_STATUS).json(filteredTalkers);
+});
+
 app.get('/talker', async (_req, res) => {
   try {
     const talkers = await getTalkers();
@@ -67,17 +76,18 @@ validateToken,
 validationAge,
 validationTalk,
 validationTalkWatchedAt,
-validateTalkRate, async (req, res) => {
-  const { name, age, talk: { watchedAt, rate } } = req.body;
+validateTalkRate,
+async (req, res) => {
   const talkers = await getTalkers();
+  const { name, age, talk: { watchedAt, rate } } = req.body;
   const id = talkers.length + 1;
   const newTalker = {
     id,
     name,
     age,
     talk: {
-      watchedAt,
       rate,
+      watchedAt,
     },
   };
   talkers.push(newTalker);
@@ -121,7 +131,3 @@ app.delete('/talker/:id', validateToken, async (req, res) => {
 app.listen(PORT, () => {
   console.log('Online');
 });
-
-// const MIN_DIG = 6;
-// const regex = /^.*@.*\.com$/;
-// return (password.length >= MIN_DIG && email.match(regex)
